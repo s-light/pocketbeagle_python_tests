@@ -6,6 +6,21 @@
 
     based on
     https://learn.adafruit.com/adafruit-oled-featherwing/circuitpython-and-python-usage#full-example-code-8-40
+
+    check pin settings
+    https://github.com/adafruit/adafruit-beaglebone-io-python#spi
+
+    SPI0
+    ```bash
+    # SPI0_CS0:
+    $ config-pin P1_6 spi_cs
+    # SPI0_SCLK:
+    $ config-pin P1_8 spi_sclk
+    # SPI0_D0:
+    $ config-pin P1_10 spi
+    # SPI0_D1:
+    $ config-pin P1_12 spi
+    ```
 """
 
 import board
