@@ -31,9 +31,9 @@ import adafruit_ssd1306
 
 print("oled display tests")
 
-print("init spi")
+print("setup spi")
 spi = busio.SPI(board.SCLK, board.MOSI)
-print("init digitalio")
+print("setup digitalio")
 pin_cs = digitalio.DigitalInOut(board.P2_6)
 pin_rst = digitalio.DigitalInOut(board.P1_2)
 pin_dc = digitalio.DigitalInOut(board.P1_4)
