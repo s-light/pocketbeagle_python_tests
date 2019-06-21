@@ -24,6 +24,9 @@ simple test for adafruit-circuitpython-ssd1306.
     ```
 """
 
+import time
+import random
+
 import board
 import digitalio
 import busio
@@ -40,8 +43,11 @@ pin_rst = digitalio.DigitalInOut(board.P1_2)
 pin_dc = digitalio.DigitalInOut(board.P1_4)
 
 print("init SSD1306_SPI")
+width = 128
+height = 32
 # width, height, spi, dc, reset, cs
-display = adafruit_ssd1306.SSD1306_SPI(128, 32, spi, pin_dc, pin_rst, pin_cs)
+display = adafruit_ssd1306.SSD1306_SPI(
+    width, height, spi, pin_dc, pin_rst, pin_cs)
 
 print("clear display")
 display.fill(0)
@@ -55,21 +61,21 @@ display.pixel(64, 16, 1)
 # Set a pixel in the opposite 127, 31 position.
 display.pixel(127, 31, 1)
 display.show()
+time.sleep(1)
 
-time.sleep(10)
-print("show Hello World")
-display.fill(0)
-oled.text('Hello', 0, 0, 1)
-oled.text('World', 0, 10, 1)
-display.show()
+# print("show Hello World")
+# display.fill(0)
+# display.text('Hello', 0, 0, 1)
+# display.text('World', 0, 10, 1)
+# display.show()
+# time.sleep(2)
 
-time.sleep(10)
 print("show random stars")
 
-for _ in range(500):
-    for _ in range(500):
-        x = random.randrange(WIDTH)
-        y = random.randrange(HEIGHT)
+for _ in range(10):
+    for _ in range(50):
+        x = random.randrange(width)
+        y = random.randrange(height)
         display.pixel(x, y, 1)
     display.show()
     display.fill(0)
