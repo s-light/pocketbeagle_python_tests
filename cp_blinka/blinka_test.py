@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-    simple test for adafruit-blinka.
+simple test for adafruit-blinka.
 
     https://learn.adafruit.com/circuitpython-on-raspberrypi-linux/installing-circuitpython-on-raspberry-pi
 """

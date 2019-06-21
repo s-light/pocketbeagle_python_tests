@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-    simple test for adafruit-circuitpython-ssd1306.
+simple test for adafruit-circuitpython-ssd1306.
 
     based on
     https://learn.adafruit.com/adafruit-oled-featherwing/circuitpython-and-python-usage#full-example-code-8-40
+    https://learn.adafruit.com/circuitpython-oled-knob-sketcher/drawing-pixels#its-full-of-stars-3-18
 
     check pin settings
     https://github.com/adafruit/adafruit-beaglebone-io-python#spi
@@ -54,3 +55,24 @@ display.pixel(64, 16, 1)
 # Set a pixel in the opposite 127, 31 position.
 display.pixel(127, 31, 1)
 display.show()
+
+time.sleep(10)
+print("show Hello World")
+display.fill(0)
+oled.text('Hello', 0, 0, 1)
+oled.text('World', 0, 10, 1)
+display.show()
+
+time.sleep(10)
+print("show random stars")
+
+for _ in range(500):
+    for _ in range(500):
+        x = random.randrange(WIDTH)
+        y = random.randrange(HEIGHT)
+        display.pixel(x, y, 1)
+    display.show()
+    display.fill(0)
+
+print("done.")
+time.sleep(0)
