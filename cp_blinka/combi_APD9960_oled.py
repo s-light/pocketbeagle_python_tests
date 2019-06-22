@@ -10,6 +10,7 @@ simple test for apds9960 sensor in combination with ssd1306 oled.
 """
 
 import time
+import datetime
 
 import board
 import busio
@@ -86,7 +87,7 @@ def setup_sensor():
     print("setup Sensor")
     sensor.enable_proximity = True
     sensor.enable_gesture = True
-    sensor.enable_color = True
+    # sensor.enable_color = True
 
 
 def setup_display():
@@ -109,22 +110,22 @@ def setup_display():
     text_positions["proximity"] = (temp_x, temp_y)
     display_text("-", text_positions["proximity"])
     # color
-    temp_x = 0
-    temp_y = 2 * line_height
-    temp_x = display_text("red: ", (temp_x, temp_y))
-    text_positions["red"] = (temp_x, temp_y)
-    temp_x = 0
-    temp_y = 3 * line_height
-    temp_x = display_text("green: ", (temp_x, temp_y))
-    text_positions["green"] = (temp_x, temp_y)
-    temp_x = 0
-    temp_y = 4 * line_height
-    temp_x = display_text("blue: ", (temp_x, temp_y))
-    text_positions["blue"] = (temp_x, temp_y)
-    temp_x = 0
-    temp_y = 5 * line_height
-    temp_x = display_text("clear: ", (temp_x, temp_y))
-    text_positions["clear"] = (temp_x, temp_y)
+    # temp_x = 0
+    # temp_y = 2 * line_height
+    # temp_x = display_text("red: ", (temp_x, temp_y))
+    # text_positions["red"] = (temp_x, temp_y)
+    # temp_x = 0
+    # temp_y = 3 * line_height
+    # temp_x = display_text("green: ", (temp_x, temp_y))
+    # text_positions["green"] = (temp_x, temp_y)
+    # temp_x = 0
+    # temp_y = 4 * line_height
+    # temp_x = display_text("blue: ", (temp_x, temp_y))
+    # text_positions["blue"] = (temp_x, temp_y)
+    # temp_x = 0
+    # temp_y = 5 * line_height
+    # temp_x = display_text("clear: ", (temp_x, temp_y))
+    # text_positions["clear"] = (temp_x, temp_y)
 
     display.show()
 
@@ -143,7 +144,6 @@ def update_proximity(proximity):
     format_string = "{: >4}"
     clear_text(format_string.format(proximity), text_positions["proximity"])
     display_text(format_string.format(proximity), text_positions["proximity"])
-    print("\b\b\b\b{: >4}".format(proximity), end="")
 
 
 def update_color(color_data):
@@ -171,38 +171,56 @@ def main():
     setup_display()
     print("Main Loop")
     print("-----")
+    gesture_last = None
+    proximity_last = None
+    color_last = (0, 0, 0, 0)
     gesture = 0
-    proximity = 0
-    color = 0
+    proximity = None
+    color = (0, 0, 0, 0)
     flag_mod = False
     try:
         while True:
-            flag_mod = False
-            # gesture_new = sensor.gesture()
-            # if gesture_new is not 0:
-            #     if gesture != gesture_new:
-            #         print("proximity update.")
-            #         gesture = gesture_new
-            #         update_gesture(gesture)
-            #         flag_mod = True
-            update_proximity(sensor.proximity())
-            flag_mod = True
-            # proximity_new = sensor.proximity()
-            # if proximity != proximity_new:
-            #     print("proximity update.")
-            #     proximity = proximity_new
+            # flag_mod = False
+            gesture = sensor.gesture()
+            # if gesture is not 0:
+            if gesture != gesture_last:
+                # print("\n gesture update")
+                gesture_last = gesture
+                update_gesture(gesture)
+                # flag_mod = True
+                display.show()
+            # proximity = sensor.proximity()
+            # if proximity != proximity_last:
+            #     # print("\n proximity update")
+            #     proximity_last = proximity
             #     update_proximity(proximity)
             #     flag_mod = True
-            # color_new = sensor.color_data
-            # if color != color_new:
-            #     color = color_new
+            # color = sensor.color_data
+            # if color != color_last:
+            #     color_last = color
             #     update_color(color)
             #     flag_mod = True
-            if flag_mod:
-                display.show()
+            # if flag_mod:
+            #     display.show()
+            print(
+                "{} "
+                "gesture: {: >5};  "
+                # "proximity: {: >4};  "
+                # "color: {: >4} {: >4} {: >4} {: >4};  "
+                "".format(
+                    datetime.datetime.now(),
+                    gesture_name[gesture],
+                    # proximity,
+                    # *color
+                ),
+                end="\r"
+            )
             time.sleep(0.0001)
     except KeyboardInterrupt as e:
-        print("  → exit")
+        print("\n  → exit")
+    finally:
+        display.fill(0)
+        display.show()
 
 
 if __name__ == "__main__":
