@@ -44,7 +44,7 @@ pin_dc = digitalio.DigitalInOut(board.P1_4)
 
 print("init SSD1306_SPI")
 width = 128
-height = 32
+height = 64
 # width, height, spi, dc, reset, cs
 display = adafruit_ssd1306.SSD1306_SPI(
     width, height, spi, pin_dc, pin_rst, pin_cs)
@@ -52,6 +52,12 @@ display = adafruit_ssd1306.SSD1306_SPI(
 print("clear display")
 display.fill(0)
 display.show()
+
+print("fill display")
+display.fill(1)
+display.show()
+time.sleep(2)
+display.fill(0)
 
 print("draw some test pixels")
 # Set a pixel in the origin 0,0 position.
@@ -63,12 +69,12 @@ display.pixel(127, 31, 1)
 display.show()
 time.sleep(1)
 
-# print("show Hello World")
-# display.fill(0)
-# display.text('Hello', 0, 0, 1)
-# display.text('World', 0, 10, 1)
-# display.show()
-# time.sleep(2)
+print("show Hello World")
+display.fill(0)
+display.text('Hello', 0, 0, 1)
+display.text('World', 0, 10, 1)
+display.show()
+time.sleep(2)
 
 print("show random stars")
 
