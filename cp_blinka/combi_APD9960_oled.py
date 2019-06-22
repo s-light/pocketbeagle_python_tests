@@ -49,19 +49,33 @@ gesture_name = {
 }
 
 text_positions = {
-    'gesture': (0, 0),
-    'proximity': (0, 0),
-    'color': (0, 0),
+    "gesture": (0, 0),
+    "proximity": (0, 0),
+    "color": (0, 0),
+    "red": (0, 0),
+    "green": (0, 0),
+    "blue": (0, 0),
+    "clear": (0, 0),
 }
 
 
 # ------------------------------------------
+def clear_text(text, pos):
+    """Clear area for text."""
+    x, y = pos
+    color = 0
+    width = BitmapFont.width(text)
+    height = BitmapFont.font_height
+    display.fill_rect(x, y, width, height, color)
+    return x + width
+
+
 def display_text(text, pos):
     """Display text and return end position."""
     x, y = pos
-    scale = 1
-    display.text(text, x, y, scale)
+    color = 1
     width = BitmapFont.width(text)
+    display.text(text, x, y, color)
     return x + width
 
 
@@ -85,44 +99,68 @@ def setup_display():
     # gesture
     temp_x = 0
     temp_y = 0 * line_height
-    temp_x = display_text('gesture: ', (temp_x, temp_y))
-    text_positions['gesture'] = (temp_x, temp_y)
-    display_text('-', text_positions['gesture'])
+    temp_x = display_text("gesture: ", (temp_x, temp_y))
+    text_positions["gesture"] = (temp_x, temp_y)
+    display_text("-", text_positions["gesture"])
     # proximity
     temp_x = 0
     temp_y = 1 * line_height
-    temp_x = display_text('proximity: ', (temp_x, temp_y))
-    text_positions['proximity'] = (temp_x, temp_y)
-    display_text('-', text_positions['proximity'])
+    temp_x = display_text("proximity: ", (temp_x, temp_y))
+    text_positions["proximity"] = (temp_x, temp_y)
+    display_text("-", text_positions["proximity"])
     # color
     temp_x = 0
     temp_y = 2 * line_height
-    temp_x = display_text('color: ', (temp_x, temp_y))
-    text_positions['color'] = (temp_x, temp_y)
-    display_text('-', text_positions['color'])
+    temp_x = display_text("red: ", (temp_x, temp_y))
+    text_positions["red"] = (temp_x, temp_y)
+    temp_x = 0
+    temp_y = 3 * line_height
+    temp_x = display_text("green: ", (temp_x, temp_y))
+    text_positions["green"] = (temp_x, temp_y)
+    temp_x = 0
+    temp_y = 4 * line_height
+    temp_x = display_text("blue: ", (temp_x, temp_y))
+    text_positions["blue"] = (temp_x, temp_y)
+    temp_x = 0
+    temp_y = 5 * line_height
+    temp_x = display_text("clear: ", (temp_x, temp_y))
+    text_positions["clear"] = (temp_x, temp_y)
 
     display.show()
 
 
+# ------------------------------------------
+
 def update_gesture(gesture):
     """Update Gesture."""
-    # print('Saw gesture: {}: {}'.format(gesture, gesture_name[gesture]))
-    display_text('    ', text_positions['gesture'])
-    display_text(gesture_name[gesture], text_positions['gesture'])
+    # print("Saw gesture: {}: {}".format(gesture, gesture_name[gesture]))
+    clear_text("mmmmm", text_positions["gesture"])
+    display_text(gesture_name[gesture], text_positions["gesture"])
 
 
 def update_proximity(proximity):
     """Update proximity."""
-    display_text('    ', text_positions['proximity'])
-    display_text(proximity, text_positions['proximity'])
+    format_string = "{: >4}"
+    clear_text(format_string.format(proximity), text_positions["proximity"])
+    display_text(format_string.format(proximity), text_positions["proximity"])
+    print("\b\b\b\b{: >4}".format(proximity), end="")
 
 
 def update_color(color_data):
     """Update Color."""
-    r, g, b, c = color_data
-    format_string = 'r: {}, g: {}, b: {}, c: {}'
+    red, green, blue, clear = color_data
+    # format_string = "r: {: >4}, g: {: >4}, b: {: >4}, c: {: >4}"
     # print(format_string.format(r, g, b, c))
-    display_text(format_string.format(r, g, b, c), text_positions['color'])
+    # display_text(format_string.format(r, g, b, c), text_positions["color"])
+    format_string = "{: >4}"
+    clear_text(format_string.format(red), text_positions["red"])
+    display_text(format_string.format(red), text_positions["red"])
+    clear_text(format_string.format(green), text_positions["green"])
+    display_text(format_string.format(green), text_positions["green"])
+    clear_text(format_string.format(blue), text_positions["blue"])
+    display_text(format_string.format(blue), text_positions["blue"])
+    clear_text(format_string.format(clear), text_positions["clear"])
+    display_text(format_string.format(clear), text_positions["clear"])
 
 
 # ------------------------------------------
@@ -132,6 +170,7 @@ def main():
     setup_sensor()
     setup_display()
     print("Main Loop")
+    print("-----")
     gesture = 0
     proximity = 0
     color = 0
@@ -139,27 +178,32 @@ def main():
     try:
         while True:
             flag_mod = False
-            gesture_new = sensor.gesture()
-            if gesture_new is not 0:
-                if gesture is not gesture_new:
-                    gesture = gesture_new
-                    update_gesture(gesture)
-                    flag_mod = True
-            proximity_new = sensor.proximity()
-            if proximity is not proximity_new:
-                proximity = proximity_new
-                update_proximity(proximity)
-                flag_mod = True
-            color_new = sensor.color_data
-            if color is not color_new:
-                color = color_new
-                update_color(color)
-                flag_mod = True
+            # gesture_new = sensor.gesture()
+            # if gesture_new is not 0:
+            #     if gesture != gesture_new:
+            #         print("proximity update.")
+            #         gesture = gesture_new
+            #         update_gesture(gesture)
+            #         flag_mod = True
+            update_proximity(sensor.proximity())
+            flag_mod = True
+            # proximity_new = sensor.proximity()
+            # if proximity != proximity_new:
+            #     print("proximity update.")
+            #     proximity = proximity_new
+            #     update_proximity(proximity)
+            #     flag_mod = True
+            # color_new = sensor.color_data
+            # if color != color_new:
+            #     color = color_new
+            #     update_color(color)
+            #     flag_mod = True
             if flag_mod:
                 display.show()
+            time.sleep(0.0001)
     except KeyboardInterrupt as e:
-        print('exit')
+        print("  → exit")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
