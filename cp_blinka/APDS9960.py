@@ -24,18 +24,20 @@ i2c = busio.I2C(board.SCL, board.SDA)
 print("setup APDS9960")
 sensor = adafruit_apds9960.apds9960.APDS9960(i2c)
 
-print("read proximity")
+print("read proximity (for 4seconds)")
 sensor.enable_proximity = True
-for index in range(12):
+for index in range(16):
     print(sensor.proximity())
     time.sleep(0.25)
 
 print("read color")
 sensor.enable_color = True
+while not sensor.color_data_ready:
+    time.sleep(0.005)
 r, g, b, c = sensor.color_data
-print('Red: {0}, Green: {1}, Blue: {2}, Clear: {3}'.format(r, g, b, c))
+print('Red: {}, Green: {}, Blue: {}, Clear: {}'.format(r, g, b, c))
 
-print("waiting for gesture...")
+print("waiting for gesture... (10 times - but no timeout)")
 gesture_name = {
     0: "No",
     1: "Up",
@@ -45,9 +47,12 @@ gesture_name = {
 }
 sensor.enable_gesture = True
 
-for index in range(4):
-    gesture = sensor.gesture()
-    while gesture == 0:
+try:
+    for index in range(10):
         gesture = sensor.gesture()
-    print('Saw gesture: {}: {}'.format(gesture, gesture_name[gesture]))
-    print("waiting for gesture...")
+        while gesture == 0:
+            gesture = sensor.gesture()
+        print('Saw gesture: {}: {}'.format(gesture, gesture_name[gesture]))
+        print("..")
+except KeyboardInterrupt as e:
+    print('exit')
